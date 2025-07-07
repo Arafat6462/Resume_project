@@ -21,7 +21,7 @@ analyzer = ResumeSkillGapAnalyzer()
 def index():
     """Serve the HTML interface"""
     try:
-        with open('skill_gap_web_interface.html', 'r') as f:
+        with open(os.path.join(os.path.dirname(__file__), 'skill_gap_web_interface.html'), 'r') as f:
             return f.read()
     except FileNotFoundError:
         return jsonify({'error': 'Web interface not found'}), 404
