@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Skill Gap Analyzer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .input-section {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .skill-card {
+            background: white;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .skill-card:hover {
+            border-color: #667eea;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .skill-card.selected {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .results-section {
+            display: none;
+            margin-top: 30px;
+        }
+
+        .course-card {
+            background: white;
+            border: 1px solid #e1e5e9;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: transform 0.3s;
+        }
+
+        .course-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .course-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .course-meta {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .course-description {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .platform-badge {
+            background: #667eea;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+        }
+
+        .price-badge {
+            background: #28a745;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+        }
+
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .resume-section {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .resume-section h3 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .skill-gap-results {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .skill-gap-results h4 {
+            color: #0c5460;
+            margin-bottom: 15px;
+        }
+
+        .skill-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .skill-tag {
+            background: #667eea;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .skill-tag:hover {
+            background: #5a6fd8;
+            transform: scale(1.05);
+        }
+
+        .skill-tag.missing {
+            background: #dc3545;
+        }
+
+        .skill-tag.missing:hover {
+            background: #c82333;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Resume Skill Gap Analyzer</h1>
+            <p>Find learning resources for skills missing from your resume</p>
+        </div>
+        
+        <div class="content">
+            <!-- Resume Analysis Section -->
+            <div class="resume-section">
+                <h3>📄 Resume Skill Gap Analysis</h3>
+                <p style="margin-bottom: 15px; color: #856404;">Paste your resume text below to identify missing skills and get personalized learning recommendations:</p>
+                
+                <div class="form-group">
+                    <label for="resumeText">Resume Text:</label>
+                    <textarea id="resumeText" placeholder="Paste your resume content here (job descriptions, skills, experience, etc.)..."></textarea>
+                </div>
+                
+                <button class="btn" onclick="analyzeResume()" style="background: #fd7e14;">
+                    🔍 Analyze My Resume
+                </button>
+                
+                <div id="resumeResults" style="display: none;"></div>
+            </div>
+
+            <div class="input-section">
+                <h2>Select a Skill to Learn</h2>
+                <p style="margin-bottom: 20px; color: #666;">Click on a skill below or enter a custom skill</p>
+                
+                <div class="skills-grid">
+                    <div class="skill-card" data-skill="python">
+                        <strong>Python</strong>
+                        <div style="font-size: 0.9em; color: #666;">Programming</div>
+                    </div>
+                    <div class="skill-card" data-skill="javascript">
+                        <strong>JavaScript</strong>
+                        <div style="font-size: 0.9em; color: #666;">Web Development</div>
+                    </div>
+                    <div class="skill-card" data-skill="react">
+                        <strong>React</strong>
+                        <div style="font-size: 0.9em; color: #666;">Frontend Framework</div>
+                    </div>
+                    <div class="skill-card" data-skill="machine learning">
+                        <strong>Machine Learning</strong>
+                        <div style="font-size: 0.9em; color: #666;">AI & Data Science</div>
+                    </div>
+                    <div class="skill-card" data-skill="node.js">
+                        <strong>Node.js</strong>
+                        <div style="font-size: 0.9em; color: #666;">Backend</div>
+                    </div>
+                    <div class="skill-card" data-skill="aws">
+                        <strong>AWS</strong>
+                        <div style="font-size: 0.9em; color: #666;">Cloud Computing</div>
+                    </div>
+                    <div class="skill-card" data-skill="docker">
+                        <strong>Docker</strong>
+                        <div style="font-size: 0.9em; color: #666;">DevOps</div>
+                    </div>
+                    <div class="skill-card" data-skill="data science">
+                        <strong>Data Science</strong>
+                        <div style="font-size: 0.9em; color: #666;">Analytics</div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 30px;">
+                    <div class="form-group">
+                        <label for="customSkill">Or enter a custom skill:</label>
+                        <input type="text" id="customSkill" placeholder="e.g., Flutter, GraphQL, Kubernetes">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="skillLevel">Target Level:</label>
+                        <select id="skillLevel">
+                            <option value="beginner">Beginner</option>
+                            <option value="intermediate">Intermediate</option>
+                            <option value="advanced">Advanced</option>
+                        </select>
+                    </div>
+                    
+                    <button class="btn" onclick="analyzeSkill()">🔍 Find Learning Resources</button>
+                    <button class="btn" onclick="customSkillSearch()" style="background: #17a2b8; margin-left: 10px;">🌐 Search Any Skill</button>
+                </div>
+            </div>
+            
+            <div class="results-section" id="results">
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Finding the best learning resources for you...</p>
+                </div>
+                
+                <div id="courses-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedSkill = '';
+        
+        // Handle skill card selection
+        document.querySelectorAll('.skill-card').forEach(card => {
+            card.addEventListener('click', function() {
+                // Remove selection from all cards
+                document.querySelectorAll('.skill-card').forEach(c => c.classList.remove('selected'));
+                
+                // Add selection to clicked card
+                this.classList.add('selected');
+                selectedSkill = this.dataset.skill;
+                
+                // Clear custom input
+                document.getElementById('customSkill').value = '';
+            });
+        });
+        
+        // Handle custom skill input
+        document.getElementById('customSkill').addEventListener('input', function() {
+            if (this.value.trim()) {
+                // Remove selection from all cards
+                document.querySelectorAll('.skill-card').forEach(c => c.classList.remove('selected'));
+                selectedSkill = this.value.trim();
+            }
+        });
+
+        async function analyzeResume() {
+            const resumeText = document.getElementById('resumeText').value.trim();
+            
+            if (!resumeText) {
+                alert('Please paste your resume text first');
+                return;
+            }
+            
+            // Show loading in resume results
+            const resultsContainer = document.getElementById('resumeResults');
+            resultsContainer.style.display = 'block';
+            resultsContainer.innerHTML = `
+                <div class="loading" style="padding: 20px;">
+                    <div class="spinner"></div>
+                    <p>Analyzing your resume for skill gaps...</p>
+                </div>
+            `;
+            
+            try {
+                const response = await fetch('/api/extract-skills', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        resume_text: resumeText
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayResumeAnalysis(data);
+                } else {
+                    throw new Error(data.error || 'Failed to analyze resume');
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                resultsContainer.innerHTML = 
+                    '<div style="text-align: center; color: #dc3545; padding: 20px;">Error analyzing resume: ' + error.message + '</div>';
+            }
+        }
+
+        function displayResumeAnalysis(data) {
+            const container = document.getElementById('resumeResults');
+            
+            const html = `
+                <div class="skill-gap-results">
+                    <h4>📊 Resume Analysis Results</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 20px;">
+                        <div style="text-align: center; padding: 15px; background: #d4edda; border-radius: 8px;">
+                            <div style="font-size: 1.5em; font-weight: bold; color: #155724;">${data.skills_found_count}</div>
+                            <div style="color: #155724;">Skills Found</div>
+                        </div>
+                        <div style="text-align: center; padding: 15px; background: #f8d7da; border-radius: 8px;">
+                            <div style="font-size: 1.5em; font-weight: bold; color: #721c24;">${data.skills_missing_count}</div>
+                            <div style="color: #721c24;">Skills Missing</div>
+                        </div>
+                        <div style="text-align: center; padding: 15px; background: #fff3cd; border-radius: 8px;">
+                            <div style="font-size: 1.5em; font-weight: bold; color: #856404;">${data.skill_gap_percentage}%</div>
+                            <div style="color: #856404;">Skill Gap</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <h5 style="color: #155724; margin-bottom: 10px;">✅ Skills Found in Your Resume:</h5>
+                        <div class="skill-list">
+                            ${data.found_skills.map(skill => 
+                                `<span class="skill-tag">${skill}</span>`
+                            ).join('')}
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <h5 style="color: #721c24; margin-bottom: 10px;">❌ Missing Skills (Click to Learn):</h5>
+                        <div class="skill-list">
+                            ${data.missing_skills.slice(0, 20).map(skill => 
+                                `<span class="skill-tag missing" onclick="searchSkillCourses('${skill}')">${skill}</span>`
+                            ).join('')}
+                        </div>
+                        ${data.missing_skills.length > 20 ? 
+                            `<p style="margin-top: 10px; color: #666; font-size: 0.9em;">... and ${data.missing_skills.length - 20} more skills</p>` : ''}
+                    </div>
+                    
+                    ${Object.keys(data.categorized_missing_skills).length > 0 ? `
+                        <div>
+                            <h5 style="color: #0c5460; margin-bottom: 15px;">📂 Missing Skills by Category:</h5>
+                            ${Object.entries(data.categorized_missing_skills).map(([category, skills]) => `
+                                <div style="margin-bottom: 15px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                                    <h6 style="color: #495057; margin-bottom: 8px;">${category}</h6>
+                                    <div class="skill-list">
+                                        ${skills.slice(0, 8).map(skillObj => 
+                                            `<span class="skill-tag missing" onclick="searchSkillCourses('${skillObj.name}')">${skillObj.name}</span>`
+                                        ).join('')}
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+            
+            container.innerHTML = html;
+        }
+
+        async function searchSkillCourses(skill) {
+            // Set the skill for analysis
+            selectedSkill = skill;
+            document.getElementById('customSkill').value = skill;
+            
+            // Remove selection from all cards
+            document.querySelectorAll('.skill-card').forEach(c => c.classList.remove('selected'));
+            
+            // Analyze the skill
+            await analyzeSkill();
+        }
+
+        async function customSkillSearch() {
+            const skill = selectedSkill || document.getElementById('customSkill').value.trim();
+            
+            if (!skill) {
+                alert('Please select or enter a skill to search for courses');
+                return;
+            }
+            
+            // Show loading
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('courses-container').innerHTML = '';
+            
+            // Update loading message for custom search
+            document.getElementById('loading').innerHTML = `
+                <div class="spinner"></div>
+                <p>🌐 Searching live courses for "${skill}"...</p>
+            `;
+            
+            try {
+                const response = await fetch('/api/search-courses', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        search_term: skill
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayCustomSearchResults(data);
+                } else {
+                    throw new Error(data.error || 'Failed to search courses');
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('courses-container').innerHTML = 
+                    '<div style="text-align: center; color: #dc3545; padding: 20px;">Error searching courses: ' + error.message + '</div>';
+            }
+        }
+
+        function displayCustomSearchResults(data) {
+            // Hide loading
+            document.getElementById('loading').style.display = 'none';
+            
+            const container = document.getElementById('courses-container');
+            
+            const header = `
+                <div style="margin-bottom: 30px; text-align: center; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+                    <h2>🌐 Live Course Search Results for "${data.search_term}"</h2>
+                    <p style="color: #666; margin-top: 10px;">Found ${data.total_courses} live courses from ${data.platforms.length} platforms</p>
+                    
+                    <div style="margin-top: 15px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+                        ${data.platforms.map(platform => 
+                            `<span class="platform-badge">${platform} (${data.course_summary[platform]})</span>`
+                        ).join('')}
+                    </div>
+                </div>
+            `;
+            
+            let coursesHTML = '';
+            
+            // Display courses by platform
+            Object.entries(data.courses_by_platform).forEach(([platform, courses]) => {
+                coursesHTML += `
+                    <div style="margin-bottom: 40px;">
+                        <h3 style="color: #667eea; border-bottom: 2px solid #667eea; padding-bottom: 10px; margin-bottom: 20px;">
+                            📚 ${platform} (${courses.length} courses)
+                        </h3>
+                        <div class="courses-grid">
+                            ${courses.map(course => `
+                                <div class="course-card">
+                                    <div class="course-title">${course.title}</div>
+                                    <div class="course-meta">
+                                        <span class="platform-badge">${course.platform}</span>
+                                        <span class="price-badge">${course.price}</span>
+                                        <span style="background: #17a2b8; color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.8em;">${course.type}</span>
+                                    </div>
+                                    <div class="course-description">${course.description}</div>
+                                    <div style="margin-top: 15px;">
+                                        <a href="${course.url}" target="_blank" class="btn" style="text-decoration: none; display: inline-block;">
+                                            🔗 View Course
+                                        </a>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = header + coursesHTML;
+        }
+        
+        async function analyzeSkill() {
+            const skill = selectedSkill || document.getElementById('customSkill').value.trim();
+            const level = document.getElementById('skillLevel').value;
+            
+            if (!skill) {
+                alert('Please select or enter a skill to analyze');
+                return;
+            }
+            
+            // Show loading
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('courses-container').innerHTML = '';
+            
+            try {
+                // Call the actual API
+                const response = await fetch('/api/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        skill: skill,
+                        level: level
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayRealCourses(data.learning_plan);
+                } else {
+                    throw new Error(data.error || 'Failed to analyze skill');
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('courses-container').innerHTML = 
+                    '<div style="text-align: center; color: #dc3545; padding: 20px;">Error analyzing skill: ' + error.message + '</div>';
+            }
+        }
+        
+        async function simulateAnalysis(skill, level) {
+            // Simulate API delay
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            // Hide loading
+            document.getElementById('loading').style.display = 'none';
+            
+            // Show sample results
+            const sampleCourses = [
+                {
+                    title: `${skill.charAt(0).toUpperCase() + skill.slice(1)} - Complete Course`,
+                    platform: "FreeCodeCamp",
+                    url: "https://www.freecodecamp.org",
+                    description: `Learn ${skill} from basics to advanced level with hands-on projects`,
+                    price: "Free",
+                    time: "15-20 hours",
+                    relevance: 95
+                },
+                {
+                    title: `${skill.charAt(0).toUpperCase() + skill.slice(1)} Tutorial`,
+                    platform: "YouTube",
+                    url: "https://www.youtube.com",
+                    description: `Comprehensive ${skill} tutorial with real-world examples`,
+                    price: "Free",
+                    time: "10+ hours",
+                    relevance: 90
+                },
+                {
+                    title: `Learn ${skill.charAt(0).toUpperCase() + skill.slice(1)}`,
+                    platform: "Coursera",
+                    url: "https://www.coursera.org",
+                    description: `University-level course on ${skill} with certification`,
+                    price: "Free (Certificate: $49)",
+                    time: "6 weeks",
+                    relevance: 88
+                }
+            ];
+            
+            displayCourses(sampleCourses, skill, level);
+        }
+        
+        function displayCourses(courses, skill, level) {
+            const container = document.getElementById('courses-container');
+            
+            const header = `
+                <div style="margin-bottom: 30px; text-align: center; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+                    <h2>📚 Learning Plan for ${skill.charAt(0).toUpperCase() + skill.slice(1)}</h2>
+                    <p style="color: #666; margin-top: 10px;">Target Level: ${level.charAt(0).toUpperCase() + level.slice(1)}</p>
+                    <p style="color: #666;">Found ${courses.length} recommended courses</p>
+                </div>
+            `;
+            
+            const coursesHTML = courses.map(course => `
+                <div class="course-card">
+                    <div class="course-title">${course.title}</div>
+                    <div class="course-meta">
+                        <span class="platform-badge">${course.platform}</span>
+                        <span class="price-badge">${course.price}</span>
+                        <span>⏱️ ${course.time}</span>
+                        <span>⭐ ${course.relevance}/100</span>
+                    </div>
+                    <div class="course-description">${course.description}</div>
+                    <div style="margin-top: 15px;">
+                        <a href="${course.url}" target="_blank" class="btn" style="text-decoration: none; display: inline-block;">
+                            🔗 View Course
+                        </a>
+                    </div>
+                </div>
+            `).join('');
+            
+            container.innerHTML = header + coursesHTML;
+        }
+        
+        function displayRealCourses(learningPlan) {
+            // Hide loading
+            document.getElementById('loading').style.display = 'none';
+            
+            const container = document.getElementById('courses-container');
+            
+            const header = `
+                <div style="margin-bottom: 30px; text-align: center; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+                    <h2>📚 Live Learning Resources for ${learningPlan.skill.charAt(0).toUpperCase() + learningPlan.skill.slice(1)}</h2>
+                    <p style="color: #666; margin-top: 10px;">Target Level: ${learningPlan.level.charAt(0).toUpperCase() + learningPlan.level.slice(1)}</p>
+                    <p style="color: #666;">🌐 Found ${learningPlan.total_courses_found} live courses from ${learningPlan.platforms.length} platforms</p>
+                    
+                    <div style="margin-top: 15px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+                        ${learningPlan.platforms.map(platform => 
+                            `<span class="platform-badge">${platform} (${learningPlan.course_summary[platform]})</span>`
+                        ).join('')}
+                    </div>
+                </div>
+            `;
+            
+            // Group courses by platform
+            const coursesByPlatform = {};
+            learningPlan.live_courses.forEach(course => {
+                if (!coursesByPlatform[course.platform]) {
+                    coursesByPlatform[course.platform] = [];
+                }
+                coursesByPlatform[course.platform].push(course);
+            });
+            
+            let coursesHTML = '';
+            
+            // Display courses by platform
+            Object.entries(coursesByPlatform).forEach(([platform, courses]) => {
+                coursesHTML += `
+                    <div style="margin-bottom: 40px;">
+                        <h3 style="color: #667eea; border-bottom: 2px solid #667eea; padding-bottom: 10px; margin-bottom: 20px;">
+                            📚 ${platform} (${courses.length} courses)
+                        </h3>
+                        <div class="courses-grid">
+                            ${courses.map(course => `
+                                <div class="course-card">
+                                    <div class="course-title">${course.title}</div>
+                                    <div class="course-meta">
+                                        <span class="platform-badge">${course.platform}</span>
+                                        <span class="price-badge">${course.price}</span>
+                                        <span style="background: #17a2b8; color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.8em;">${course.type}</span>
+                                    </div>
+                                    <div class="course-description">${course.description}</div>
+                                    <div style="margin-top: 15px;">
+                                        <a href="${course.url}" target="_blank" class="btn" style="text-decoration: none; display: inline-block;">
+                                            🔗 View Course
+                                        </a>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            // Add basic learning plan if available
+            if (learningPlan.basic_plan && learningPlan.basic_plan.learning_path) {
+                const basicPlanHTML = `
+                    <div style="margin-bottom: 30px; padding: 20px; background: #e8f4f8; border-radius: 10px;">
+                        <h3>📋 Recommended Learning Path:</h3>
+                        <ol style="margin-top: 15px; padding-left: 20px;">
+                            ${learningPlan.basic_plan.learning_path.map(step => `<li style="margin-bottom: 8px;">${step}</li>`).join('')}
+                        </ol>
+                        ${learningPlan.basic_plan.related_skills && learningPlan.basic_plan.related_skills.length > 0 ? 
+                            `<p style="margin-top: 15px; color: #666;">🔗 Related Skills: ${learningPlan.basic_plan.related_skills.join(', ')}</p>` : ''}
+                    </div>
+                `;
+                coursesHTML = basicPlanHTML + coursesHTML;
+            }
+            
+            container.innerHTML = header + coursesHTML;
+        }
+        
+        // Auto-scroll to results when they appear
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.target.id === 'results' && mutation.target.style.display === 'block') {
+                    setTimeout(() => {
+                        mutation.target.scrollIntoView({ behavior: 'smooth' });
+                    }, 100);
+                }
+            });
+        });
+        
+        observer.observe(document.getElementById('results'), {
+            attributes: true,
+            attributeFilter: ['style']
+        });
+    </script>
+</body>
+</html>
