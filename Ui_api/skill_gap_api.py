@@ -3,12 +3,13 @@ from flask_cors import CORS
 import sys
 import os
 
-# Add the current directory to Python path
+# Add the current and parent directory to Python path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 # Import our analyzer and scraper
 from resume_skill_gap_analyzer import ResumeSkillGapAnalyzer
-from universal_course_scraper import CourseScraper
+from Course_scraper.universal_course_scraper import CourseScraper
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes

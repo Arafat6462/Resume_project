@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies
-RUN pip install --no-cache-dir openai fpdf markdown xhtml2pdf
+RUN pip install --no-cache-dir openai fpdf markdown xhtml2pdf flask flask_cors beautifulsoup4 requests
 
 # Copy all project directories into the container
 COPY Ai_Resume/ /app/Ai_Resume/
