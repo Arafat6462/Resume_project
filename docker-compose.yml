@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  resume_project:
+    image: resume_project_image
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./Ai_Resume:/app/Ai_Resume
+      - ./Course_scraper:/app/Course_scraper
+      - ./Ui_api:/app/Ui_api
+    environment:
+      - PYTHONUNBUFFERED=1
