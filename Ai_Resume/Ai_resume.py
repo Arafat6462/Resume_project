@@ -1,4 +1,15 @@
 import os
+from dotenv import load_dotenv
+from openai import OpenAI
+import fpdf
+import markdown
+from xhtml2pdf import pisa
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Get API key from environment variable
+api_key = os.getenv("OPENAI_API_KEY")
 
 
 print("This is a python Dockerfile example")
@@ -7,12 +18,6 @@ print("Current working directory:", __file__)
 
 
 
-
-import os
-from openai import OpenAI
-import fpdf
-import markdown
-from xhtml2pdf import pisa
 
 content = """
 
@@ -79,7 +84,7 @@ Office Transportation Facilities
 
 client = OpenAI(
   base_url="https://openrouter.ai/api/v1",
-  api_key="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", 
+  api_key=api_key,
 )
 
 completion = client.chat.completions.create(

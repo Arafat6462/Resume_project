@@ -11,7 +11,10 @@ docker rmi <image>          # Remove an image
 docker pull <image>         # Pull image from Docker Hub
 docker exec -it <id|name> bash  # Exec bash in running container
 docker logs <id|name>       # Show container logs
-docker build -t myimg .               # Build image from Dockerfile
+
+docker build -t myimg:version .     # Build image from Dockerfile
+docker run -d -p 5000:5000 --name your_container_name your_image_name
+docker compose -f dockerfile.yml up -d --build
 
 ```
 
